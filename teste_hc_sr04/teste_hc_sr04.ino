@@ -4,7 +4,12 @@ constexpr int CFG_PINO_TRIG = 25; // TRIG do HC-SR04 (PC1).
 constexpr int CFG_PINO_ECHO = 26; // ECHO via divisor 1 kΩ / 2 kΩ (PC1).
 constexpr unsigned long CFG_INTERVALO_DISPARO_MS = 100; // 10 Hz, conforme PC1.
 constexpr unsigned long CFG_PULSO_TRIG_US = 10; // Pulso de disparo do HC-SR04.
-constexpr unsigned long CFG_TIMEOUT_ECHO_US = 30000; // Limite total; cobre eco de 4 m.
+
+// ===== OBJETOS GLOBAIS =====
+portMUX_TYPE travaEco = portMUX_INITIALIZER_UNLOCKED;
+volatile bool capturaAtiva = false;
+volatile bool subidaRecebida = false;
+volatile bool ecoDisponivel = false;constexpr unsigned long CFG_TIMEOUT_ECHO_US = 30000; // Limite total; cobre eco de 4 m.
 constexpr float CFG_VELOCIDADE_SOM_MM_US = 0.343f; // 343 m/s, estimativa do PC1.
 constexpr float CFG_FATOR_IDA_VOLTA = 2.0f; // Eco percorre ida e volta.
 constexpr unsigned int CFG_CASAS_DECIMAIS = 1; // Precisão de exibição, não do sensor.
@@ -12,11 +17,6 @@ constexpr unsigned long CFG_PAUSA_LOOP_MS = 1; // Cede CPU enquanto aguarda inte
 
 #include <Arduino.h>
 
-// ===== OBJETOS GLOBAIS =====
-portMUX_TYPE travaEco = portMUX_INITIALIZER_UNLOCKED;
-volatile bool capturaAtiva = false;
-volatile bool subidaRecebida = false;
-volatile bool ecoDisponivel = false;
 volatile unsigned long inicioEcoUs = 0;
 volatile unsigned long duracaoEcoUs = 0;
 bool aguardandoEco = false;
